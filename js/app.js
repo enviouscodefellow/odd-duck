@@ -90,6 +90,9 @@ function randomIndex() {
   return Math.floor(Math.random() * productDisplayArray.length);
 }
 
+let previousProductRenders = [];
+console.log(previousProductRenders);
+
 function renderImages() {
   let imgOne = randomIndex();
   let imgTwo = randomIndex();
@@ -101,18 +104,31 @@ function renderImages() {
     imgThree = randomIndex();
   }
 
-  imgOneElem.src = productDisplayArray[imgOne].img;
-  imgTwoElem.src = productDisplayArray[imgTwo].img;
-  imgThreeElem.src = productDisplayArray[imgThree].img;
+  for (let i=0; i<previousProductRenders; i++){
+    if(imgOne === previousProductRenders[i] || imgTwo === previousProductRenders[i] || imgThree === previousProductRenders[i]){
+      renderImages();
+    } else {
+    }
+  }
+  previousProductRenders.splice(0,1,imgOne);
+  previousProductRenders.splice(1,1,imgTwo);
+  previousProductRenders.splice(2,1,imgThree);
+  
+    console.log(previousProductRenders);
+  
+    imgOneElem.src = productDisplayArray[imgOne].img;
+    imgTwoElem.src = productDisplayArray[imgTwo].img;
+    imgThreeElem.src = productDisplayArray[imgThree].img;
+  
+    // TODO For each of the three images, increment its property of times it has been shown by one.
+    productDisplayArray[imgOne].renders++;
+    productDisplayArray[imgTwo].renders++;
+    productDisplayArray[imgThree].renders++;
+  
+    imgOneElem.alt = productDisplayArray[imgOne].name;
+    imgTwoElem.alt = productDisplayArray[imgTwo].name;
+    imgTwoElem.alt = productDisplayArray[imgThree].name;
 
-  // TODO For each of the three images, increment its property of times it has been shown by one.
-  productDisplayArray[imgOne].renders++;
-  productDisplayArray[imgTwo].renders++;
-  productDisplayArray[imgThree].renders++;
-
-  imgOneElem.alt = productDisplayArray[imgOne].name;
-  imgTwoElem.alt = productDisplayArray[imgTwo].name;
-  imgTwoElem.alt = productDisplayArray[imgThree].name;
 }
 
 
