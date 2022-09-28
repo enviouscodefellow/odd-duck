@@ -1,0 +1,33 @@
+body{
+  padding: 30px;
+}
+section{
+  color: fuchsia;
+  background-color: paleturquoise;
+  font-size: xx-large;
+  text-align: center;
+}
+
+article{font-size: xx-large;
+  background-color: aquamarine;
+}
+article img{
+  padding: 30px;
+  width: 20%;
+  }
+
+div{
+  text-align: center;
+  color: fuchsia;
+  background-color: paleturquoise;
+  font-size: xx-large;
+  }
+
+ul{
+  font-size: x-large;
+  background-color: aquamarine;
+  text-align: center;
+}
+footer{
+  padding-top: 100px;
+}
