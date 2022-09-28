@@ -55,6 +55,84 @@ let productImageArray = [
 
 let productDisplayArray = [];
 
+function renderChart() {
+  let chartNames = [];
+  let chartRenders = [];
+  let chartClicks = [];
+
+  for (let i = 0; i < productDisplayArray.length; i++) {
+    chartNames.push(productDisplayArray[i].name);
+    chartRenders.push(productDisplayArray[i].renders);
+    chartClicks.push(productDisplayArray[i].clicks);
+  }
+
+  let myChartObject = {
+    type: 'bar',
+    data: {
+      labels: chartNames,
+      datasets: [
+        {
+          label: '# of Votes',
+          data: chartClicks,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+          ],
+          borderWidth: 1,
+          order: 1,
+        },
+        {
+          label: '# of Views',
+          data: chartRenders,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(255, 159, 64, 0.5)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+          ],
+          borderWidth: 1,
+          order: 0,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          stacked: true,
+          beginatzero: true,
+        },
+        x: {
+          stacked: true,
+          beginatzero: true,
+        },
+      },
+    },
+  };
+  let myChart = new Chart(canvasElem, myChartObject);
+}
+
 // As a user, I would like to display three unique products by chance so that the viewers can pick a favorite.
 
 //********DOM MANIPULATION/REFERENCES********/
@@ -66,7 +144,7 @@ let imgThreeElem = document.getElementById('img-three');
 let resultsBtn = document.getElementById('results-button');
 let resultsList = document.getElementById('results-list');
 
-
+let canvasElem = document.getElementById('my-chart').getContext('2d');
 // TODO Create a constructor function that creates an object associated with each product, and has the following properties:
 
 //********CONTRUCTORS********/
@@ -104,33 +182,35 @@ function renderImages() {
     imgThree = randomIndex();
   }
 
-  for (let i=0; i<previousProductRenders; i++){
-    if(imgOne === previousProductRenders[i] || imgTwo === previousProductRenders[i] || imgThree === previousProductRenders[i]){
+  for (let i = 0; i < previousProductRenders; i++) {
+    if (
+      imgOne === previousProductRenders[i] ||
+      imgTwo === previousProductRenders[i] ||
+      imgThree === previousProductRenders[i]
+    ) {
       renderImages();
     } else {
     }
   }
-  previousProductRenders.splice(0,1,imgOne);
-  previousProductRenders.splice(1,1,imgTwo);
-  previousProductRenders.splice(2,1,imgThree);
-  
-    console.log(previousProductRenders);
-  
-    imgOneElem.src = productDisplayArray[imgOne].img;
-    imgTwoElem.src = productDisplayArray[imgTwo].img;
-    imgThreeElem.src = productDisplayArray[imgThree].img;
-  
-    // TODO For each of the three images, increment its property of times it has been shown by one.
-    productDisplayArray[imgOne].renders++;
-    productDisplayArray[imgTwo].renders++;
-    productDisplayArray[imgThree].renders++;
-  
-    imgOneElem.alt = productDisplayArray[imgOne].name;
-    imgTwoElem.alt = productDisplayArray[imgTwo].name;
-    imgTwoElem.alt = productDisplayArray[imgThree].name;
+  previousProductRenders.splice(0, 1, imgOne);
+  previousProductRenders.splice(1, 1, imgTwo);
+  previousProductRenders.splice(2, 1, imgThree);
 
+  console.log(previousProductRenders);
+
+  imgOneElem.src = productDisplayArray[imgOne].img;
+  imgTwoElem.src = productDisplayArray[imgTwo].img;
+  imgThreeElem.src = productDisplayArray[imgThree].img;
+
+  // TODO For each of the three images, increment its property of times it has been shown by one.
+  productDisplayArray[imgOne].renders++;
+  productDisplayArray[imgTwo].renders++;
+  productDisplayArray[imgThree].renders++;
+
+  imgOneElem.alt = productDisplayArray[imgOne].name;
+  imgTwoElem.alt = productDisplayArray[imgTwo].name;
+  imgTwoElem.alt = productDisplayArray[imgThree].name;
 }
-
 
 // TODO As a user, I would like to track the selections made by viewers so that I can determine which products to begin production on.
 // After every selection by the viewer, update the newly added property to reflect if it was clicked.
@@ -148,7 +228,7 @@ function handleClick(event) {
 
   // TODO: decrement the vote count
   votesTimer--;
-  
+
   // TODO Once the users ‘clicks’ a product, generate three new products for the user to pick from.
   renderImages();
 
@@ -158,18 +238,18 @@ function handleClick(event) {
   }
 }
 
-
 // TODO As a user, I would like to view a report of results after all rounds of voting have concluded so that I can evaluate which products were the most popular.
 
-function handleShowResults(){
-  if(votesTimer === 0){
-    for(let i = 0; i < productDisplayArray.length; i++){
-      let liElem = document.createElement('li');
-      liElem.textContent = `${productDisplayArray[i].name} had ${productDisplayArray[i].clicks} votes and was seen ${productDisplayArray[i].renders} times.`;
-      resultsList.appendChild(liElem);
-    }
-    console.log(productDisplayArray);
-    imgContainer.removeEventListener('click', handleShowResults);
+function handleShowResults() {
+  if (votesTimer === 0) {
+    renderChart();
+    //   for (let i = 0; i < productDisplayArray.length; i++) {
+    //     let liElem = document.createElement('li');
+    //     liElem.textContent = `${productDisplayArray[i].name} had ${productDisplayArray[i].clicks} votes and was seen ${productDisplayArray[i].renders} times.`;
+    //     resultsList.appendChild(liElem);
+    //   }
+    //   console.log(productDisplayArray);
+    //   imgContainer.removeEventListener('click', handleShowResults);
   }
 }
 
@@ -177,14 +257,12 @@ function handleShowResults(){
 
 //********EXECUTABLE CODE********/
 
-for (let i =0; i<productNameArray.length; i++){
-  new UniqueProduct(productNameArray[i],productImageArray[i]);
+for (let i = 0; i < productNameArray.length; i++) {
+  new UniqueProduct(productNameArray[i], productImageArray[i]);
 }
 console.log(productDisplayArray);
 renderImages();
-
 // TODO Attach an event listener to the section of the HTML page where the images are going to be displayed.
 
 imgContainer.addEventListener('click', handleClick);
 imgContainer.addEventListener('click', handleShowResults);
-
