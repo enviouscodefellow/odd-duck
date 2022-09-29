@@ -120,11 +120,11 @@ function renderChart() {
     options: {
       scales: {
         y: {
-          stacked: true,
+          // stacked: true,
           beginatzero: true,
         },
         x: {
-          stacked: true,
+          // stacked: true,
           beginatzero: true,
         },
       },
@@ -164,40 +164,98 @@ function UniqueProduct(name, fileExt = 'jpg') {
 
 // TODO Create an algorithm that will randomly generate three unique product images from the images directory and display them side-by-side-by-side in the browser window.
 
-function randomIndex() {
-  return Math.floor(Math.random() * productDisplayArray.length);
+function buildIndex() {
+  for (let i = 0; i < productDisplayArray.length; i++) {
+    productsIndexArray.push(i);
+  }
 }
 
-let previousProductRenders = [];
-console.log(previousProductRenders);
+function randomIndex() {
+  // return Math.floor(Math.random() * productDisplayArray.length);
 
-function renderImages() {
-  let imgOne = randomIndex();
-  let imgTwo = randomIndex();
-  let imgThree = randomIndex();
+  let randomProductIndex = Math.floor(
+    Math.random() * productsIndexArray.length
+  );
+  let randomProduct = productsIndexArray[randomProductIndex];
+  return randomProduct;
+}
 
-  while (imgOne === imgTwo || imgOne === imgThree || imgTwo === imgThree) {
-    imgOne = randomIndex();
-    imgTwo = randomIndex();
-    imgThree = randomIndex();
-  }
-
-  for (let i = 0; i < previousProductRenders; i++) {
-    if (
-      imgOne === previousProductRenders[i] ||
-      imgTwo === previousProductRenders[i] ||
-      imgThree === previousProductRenders[i]
-    ) {
-      renderImages();
+function buildRenderImageArray() {
+  let push = 0;
+  for (let i = 0; i < 3; i++) {
+    push = randomIndex();
+    if (!productRenderArray.includes(push)) {
+      productRenderArray.push(push);
+      console.log(productRenderArray);
     } else {
+      while(productRenderArray.includes(push)){
+        push = randomIndex();
+      }
+      productRenderArray.push(push);
+      console.log(productRenderArray);
     }
   }
-  previousProductRenders.splice(0, 1, imgOne);
-  previousProductRenders.splice(1, 1, imgTwo);
-  previousProductRenders.splice(2, 1, imgThree);
+  removeIndexArray = productRenderArray;
+  console.log(removeIndexArray);
+}
 
-  console.log(previousProductRenders);
+function removePreviousRenders(){
+  console.log(removeIndexArray);
+  for (let i=0;i<productsIndexArray.length;i++){
+    for(let j =0; j<removeIndexArray.length;j++){
+      if (productsIndexArray[i] === removeIndexArray[j]){
+        productsIndexArray.splice(productsIndexArray.indexOf(productsIndexArray[i]), 1);
+      }
+    }
+  }
+  productRenderArray.length = 0;
+  console.log(productsIndexArray);
+}
 
+function restoreRemovedRenders(){
+  console.log(productsIndexArray);
+  for (let i=0;i<removeIndexArray.length;i++){
+    productsIndexArray.push(removeIndexArray[i]);
+  }
+  console.log(productsIndexArray);
+
+}
+let removeIndexArray = [];
+let productRenderArray = [];
+let productsIndexArray = [];
+let restoreProductRenders = [];
+
+function renderImages() {
+
+buildRenderImageArray();
+
+let imgOne = productRenderArray[0];
+  let imgTwo = productRenderArray[1];
+  let imgThree = productRenderArray[2];
+
+  // while (imgOne === imgTwo || imgOne === imgThree || imgTwo === imgThree) {
+  //   imgOne = randomIndex();
+  //   imgTwo = randomIndex();
+  //   imgThree = randomIndex();
+  // }
+  
+  // for (let i = 0; i < previousProductRenders; i++) {
+  //   if (
+  //     imgOne === previousProductRenders[i] ||
+  //     imgTwo === previousProductRenders[i] ||
+  //     imgThree === previousProductRenders[i]
+  //   ) {
+  //     renderImages();
+  //   } else {
+  //   }
+  // }
+
+  // previousProductRenders.splice(0, 1, imgOne);
+  // previousProductRenders.splice(1, 1, imgTwo);
+  // previousProductRenders.splice(2, 1, imgThree);
+
+  // console.log(previousProductRenders);
+  
   imgOneElem.src = productDisplayArray[imgOne].img;
   imgTwoElem.src = productDisplayArray[imgTwo].img;
   imgThreeElem.src = productDisplayArray[imgThree].img;
@@ -210,6 +268,7 @@ function renderImages() {
   imgOneElem.alt = productDisplayArray[imgOne].name;
   imgTwoElem.alt = productDisplayArray[imgTwo].name;
   imgTwoElem.alt = productDisplayArray[imgThree].name;
+
 }
 
 // TODO As a user, I would like to track the selections made by viewers so that I can determine which products to begin production on.
@@ -230,7 +289,10 @@ function handleClick(event) {
   votesTimer--;
 
   // TODO Once the users ‘clicks’ a product, generate three new products for the user to pick from.
+  removePreviousRenders();
+  restoreRemovedRenders();
   renderImages();
+  console.log(productsIndexArray);
 
   // After voting rounds have been completed, remove the event listeners on the product.
   if (votesTimer === 0) {
@@ -261,6 +323,12 @@ for (let i = 0; i < productNameArray.length; i++) {
   new UniqueProduct(productNameArray[i], productImageArray[i]);
 }
 console.log(productDisplayArray);
+
+buildIndex();
+
+console.log(productsIndexArray);
+// buildRenderImageArray();
+
 renderImages();
 // TODO Attach an event listener to the section of the HTML page where the images are going to be displayed.
 
